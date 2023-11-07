@@ -17,19 +17,30 @@ const fetchRandomWord = async () => {
 }
 
 const fetchImage = async (text) => {
-    const response = await axios.get(`https://img4me.p.rapidapi.com/?text=${text}&font=arial&fcolor=000000&size=35&type=png`, {
+    const htmlContent = `
+    <div style="font-family: Arial, sans-serif; font-size: 35px;">${text}</div>
+    `;
+
+    const response = await axios.post('https://hcti.io/v1/image', {
+        html: htmlContent,
+    }, {
         headers: {
-            'X-RapidAPI-Host': 'img4me.p.rapidapi.com',
-            'X-RapidAPI-Key': '5af3cea84fmsh2ca76ff2be471a8p1ab760jsn8c2a4a4b7d45',
-        }
+            'Authorization': `User-ID:ef8f3f9b-7080-472e-a337-a9a57f996386|API-Key:b8515b9b-916e-40fc-b825-8f17ff91afe8`,
+        },
     });
-    return response.data;
+
+    return response.data.url;
 }
 
 app.get('/text-to-image', async (req, res) => {
-    const text = await fetchRandomWord();
-    const imageUrl = await fetchImage(text);
-    res.json({ imageUrl, text});
+    try {
+        const text = await fetchRandomWord();
+        const imageUrl = await fetchImage(`<h1>${text}</h1>`);
+        res.json({ imageUrl, text });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to generate image' });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
