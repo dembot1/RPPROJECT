@@ -35,7 +35,7 @@ const fetchImage = async (text) => {
 app.get('/text-to-image', async (req, res) => {
     try {
         const text = await fetchRandomWord();
-        const imageUrl = await fetchImage(`<h1>${text}</h1>`);
+        const imageUrl = await fetchImage(`${text}`);
         res.json({ imageUrl, text });
     } catch (error) {
         console.error(error);
