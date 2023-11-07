@@ -1,27 +1,18 @@
 <!DOCTYPE html>
 <html>
-<body>
-    <input id="result" type="text" readonly/>
-    <button onclick="append('1')">1</button>
-    <button onclick="append('2')">2</button>
-    <button onclick="append('3')">3</button>
-    <button onclick="setOperator('+')">+</button><br/>
+<body onload="fetchImage()">
+    <h1 id="welcomeMessage"></h1>
+    <img id="image" />
 
-    <button onclick="append('4')">4</button>
-    <button onclick="append('5')">5</button>
-    <button onclick="append('6')">6</button>
-    <button onclick="setOperator('-')">-</button><br/>
+    <script>
+        async function fetchImage() {
+            const response = await fetch('/text-to-image');
+            document.getElementById('image').src = response.url;
 
-    <button onclick="append('7')">7</button>
-    <button onclick="append('8')">8</button>
-    <button onclick="append('9')">9</button>
-    <button onclick="setOperator('*')">*</button><br/>
-
-    <button onclick="append('0')">0</button>
-    <button onclick="clearAll()">C</button>
-    <button onclick="calculate('=')">=</button>
-    <button onclick="setOperator('/')">/</button>
-
-    <script src="calculator.js"></script>
+            const urlParams = new URLSearchParams(response.url);
+            const textParam = urlParams.get('text');
+            document.getElementById('welcomeMessage').textContent =`Welcome to our site! Here's a fun word: ${textParam}`
+        }
+    </script>
 </body>
 </html>
