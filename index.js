@@ -6,9 +6,14 @@ const app = express();
 
 app.use(express.static('public'));
 
+// seed word for generating random related words
+const seedWord = "fun";
+
 const fetchRandomWord = async () => {
-    const response = await axios.get('https://random-word-api.herokuapp.com/word');
-    return response.data[0];
+    const response = await axios.get(`https://api.datamuse.com/words?rel_trg=${seedWord}`);
+    // randomly selecting a word from the returned list
+    const word = response.data[Math.floor(Math.random() * response.data.length)].word;
+    return word;
 }
 
 const fetchImage = async (text) => {
