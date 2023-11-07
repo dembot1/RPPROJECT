@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html>
-<body onload="fetchImage()">
-    <h1 id="welcomeMessage"></h1>
-    <img id="image" />
+    <body id="body">
+        <h1 id="welcomeMessage" style="color: white; font-size: 30px; font-family: Arial, sans-serif;"></h1>
 
-    <script>
-        async function fetchImage() {
-            const response = await fetch('/text-to-image');
-            document.getElementById('image').src = response.url;
+        <script>
+            async function fetchImage() {
+                try {
+                    const response = await fetch('/text-to-image');
+                    const data = await response.json();
+                    let body = document.getElementById('body');
+                    // set the image as a background of the body
+                    body.style.backgroundImage = `url(${data.imageUrl})`;
+                    // ensure image covers full area and is not repeated
+                    body.style.backgroundSize = 'cover';
+                    body.style.backgroundRepeat = 'no-repeat';
 
-            const urlParams = new URLSearchParams(response.url);
-            const textParam = urlParams.get('text');
-            document.getElementById('welcomeMessage').textContent =`Welcome to our site! Here's a fun word: ${textParam}`
-        }
-    </script>
-</body>
+                    document.getElementById('welcomeMessage').textContent =`Random word: ${data.text}`;
+                } catch (error) { 
+                    console.error('Failed to fetch image:', error);
+                }
+            }
+            window.onload = fetchImage;
+        </script>
+    </body>
 </html>
