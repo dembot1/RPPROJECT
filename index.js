@@ -6,11 +6,14 @@ const app = express();
 
 app.use(express.static('public'));
 
-const words = ['apple', 'banana', 'cherry', 'date', 'elderberry'];  // Add more words as required
-
 app.get('/text-to-image', async (req, res) => {
-    const randomIndex = Math.floor(Math.random() * words.length);
-    const text = words[randomIndex];
+    // Call to Random Word API
+    const randomWordResponse = await axios.get('https://random-word-api.herokuapp.com/word', {
+        headers: {
+            'X-RapidAPI-Key': '<insert-random-word-api-key-here>',
+        }
+    });
+    const text = randomWordResponse.data[0];  // Get the first word from the response
 
     const response = await axios.get(`https://img4me.p.rapidapi.com/?text=${text}&font=arial&fcolor=000000&size=35&type=png`, {
         headers: {
@@ -18,7 +21,7 @@ app.get('/text-to-image', async (req, res) => {
             'X-RapidAPI-Key': '5af3cea84fmsh2ca76ff2be471a8p1ab760jsn8c2a4a4b7d45',
         }
     });
-    res.redirect(response.data);
+    res.json({ imageUrl: response.data, text: text });
 });
 
 const PORT = process.env.PORT || 3000;
